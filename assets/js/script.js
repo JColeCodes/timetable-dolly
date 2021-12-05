@@ -1,9 +1,73 @@
 var currDayEl = $("#currentDay");
 var timeBlockEl = $("#timeblocks");
 
+// Format date as "Weekday, Month 0, 0000"
+var displayDate = function(date) {
+    dateDisplay = date.format("dddd, MMMM D, YYYY");
+    return dateDisplay;
+}
+// Grab date as a number
+var dateNumber = function(date) {
+    currentDay = parseInt(date.format("YYYYMMDD"));
+    return currentDay;
+}
+
+// Default day is "Today"
+var today = dateNumber(moment());
+var dateNav = {
+    currentDay: today,
+    weekForward: 0
+} ;
+
 // Get and format current day as "Weekday, Fullmonth 0, 0000"
-var dateDisplay = moment().format("dddd, MMMM D, YYYY");
+var dateDisplay = displayDate(moment());
 currDayEl.text(dateDisplay);
+
+// Previous day button
+$("#prev").on("click", function() {
+    if (dateNav.currentDay == today) { // If today
+        var date = moment().subtract(1, "days"); // Make day yesterday
+        dateNav.currentDay = dateNumber(date);
+        $(this).prop("disabled", true); // Hide previous button when you go back a day
+    } else if (dateNav.currentDay == (today + 1)) { // If tomorrow
+        date = moment(); // Make day today
+        dateNav.currentDay = today;
+    } else if (dateNav.currentDay > today) { // If any day after tomorrow
+        dateNav.weekForward--; // Go back 1 day per click
+        date = moment().add(dateNav.weekForward, "days");
+        dateNav.currentDay = dateNumber(date);
+    }
+    if (dateNav.currentDay == dateNumber(moment().add(6, "days"))) {
+        $("#next").prop("disabled", false); // Re-display next button
+    }
+    // Display date on schedule
+    displayDate(date);
+    currDayEl.text(dateDisplay);
+    return dateNav;
+});
+// Next day button
+$("#next").on("click", function() {
+    if (dateNav.currentDay == today || dateNav.currentDay > today) { // If today or any day after today
+        dateNav.weekForward++; // Go forward 1 day per click
+        var date = moment().add(dateNav.weekForward, "days");
+        dateNav.currentDay = dateNumber(date);
+    } else if (dateNav.currentDay < today) { // If yesterday
+        date = moment(); // Make day today
+        dateNav.currentDay = today;
+        $("#prev").prop("disabled", false); // Re-display previous button
+    }
+    if (dateNav.currentDay == dateNumber(moment().add(7, "days"))) {
+        $(this).prop("disabled", true); // Hide next button when you go up one week
+    }
+    // Display date on schedule
+    displayDate(date);
+    currDayEl.text(dateDisplay);
+    return dateNav;
+});
+
+// Set a clear date for auto-clearing localstorage
+var clearDate = dateNumber(moment().subtract(2, "days"));
+console.log(clearDate);
 
 // Dynamically creating time blocks so I'm not manually putting in 9 divs with the same classes and stuff
 var startHour = 9; // Start calendar at 9 AM
@@ -73,3 +137,11 @@ $(".sched-block").on("blur", "textarea", function() {
     var scheduleBlockP = $("<p>").addClass("p-3 m-0").text(text);
     $(this).replaceWith(scheduleBlockP);
 });
+
+/*// Open calendar
+currDayEl.on("click", function() {
+    $(this).datepicker({
+        minDate: -1,
+        maxDate: "7d"
+    });
+});*/

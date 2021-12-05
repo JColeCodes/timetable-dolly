@@ -18,6 +18,10 @@
       href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap"
       rel="stylesheet"
     />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./assets/css/style.css" />
     <title>Work Day Scheduler</title>
   </head>
@@ -26,13 +30,17 @@
     <header class="jumbotron">
       <h1 class="display-3">Work Day Scheduler</h1>
       <p class="lead">A simple calendar app for scheduling your work day</p>
-      <p id="currentDay" class="lead"></p>
+      <div class="arrows d-flex justify-content-between">
+        <button id="prev"><i class="fas fa-chevron-left"></i></button>
+        <p id="currentDay" class="lead current-day"></p>
+        <button id="next"><i class="fas fa-chevron-right"></i></button>
+      </div>
     </header>
     <div class="container" id="timeblocks">
-      <!-- Timeblocks go here -->
     </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="./assets/js/script.js"></script>
   </body>
