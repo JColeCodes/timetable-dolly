@@ -95,11 +95,13 @@ var saveSetting = function() {
 
 // Set a clear date for auto-clearing localstorage
 var clearDate = dateNumber(moment().subtract(2, "days"));
-for (var i = 0; i < savedSchedule.length; i++) {
-    if (savedSchedule[i].day == clearDate) {
-        savedSchedule.splice(i, 1);
+if (savedSchedule.length > 0) {
+    for (var i = 0; i < savedSchedule.length; i++) {
+        if (savedSchedule[i].day == clearDate) {
+            savedSchedule.splice(i, 1);
+        }
+        saveTask();
     }
-    saveTask();
 }
 
 // Create time blocks and its buttons/content
@@ -254,6 +256,7 @@ displaySettingsUpdate();
 // Toggle settings on button click
 $("#editDisplay").on("click", function() {
     $(this).parent().find("div").toggleClass("hidden");
+    $(this).parent().find("h3").toggleClass("hidden");
 });
 // Start hour input
 displayStartHour.on("input", function() {
