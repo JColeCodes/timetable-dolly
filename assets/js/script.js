@@ -223,39 +223,49 @@ var displaySchedule = function() {
 }
 displaySchedule(); // Run on page load
 
-var displayStartHour = $("#displayStartHour");
-var displayHoursRange = $("#displayHoursRange");
+// This stuff is for the display settings
+var displayStartHour = $("#displayStartHour"); // Get start hour input
+var displayHoursRange = $("#displayHoursRange"); // Get display hours input
 
+// Function, so it can update when input is used
 var displaySettingsUpdate = function() {
+    // Start hour attributes not specified in HTML
     displayStartHour.attr({
         min: 0,
         max: (24 - displaySettings.displayHours),
         value: displaySettings.startHour,
 
     });
+    // Display hours range attributes not specified in HTML
     displayHoursRange.attr({
         min: 1,
         max: (24 - displaySettings.startHour),
         value: displaySettings.displayHours
     });
+    // So you can see what the value on slider is
+    $("#hoursSelected").text(displaySettings.displayHours);
+    
+    // Save to localstorage
     saveSetting();
 }
+// Run displaySettingsUpdate on load
 displaySettingsUpdate();
-$("#hoursSelected").text(displaySettings.displayHours);
 
+// Toggle settings on button click
 $("#editDisplay").on("click", function() {
     $(this).parent().find("div").toggleClass("hidden");
 });
+// Start hour input
 displayStartHour.on("input", function() {
-    var startHour = parseInt($(this).val());
-    displaySettings.startHour = startHour;
-    displaySchedule();
-    displaySettingsUpdate();
+    var startHour = parseInt($(this).val()); // Get value
+    displaySettings.startHour = startHour; // Edit in value
+    displaySchedule(); // Reload schedule
+    displaySettingsUpdate(); // Refresh settings
 });
+// Hour range input
 displayHoursRange.on("input", function() {
-    var hourRange = parseInt($(this).val());
-    $(this).parent().find("span").text(hourRange);
-    displaySettings.displayHours = hourRange;
-    displaySchedule();
-    displaySettingsUpdate();
+    var hourRange = parseInt($(this).val()); // Get value
+    displaySettings.displayHours = hourRange; // Edit in value
+    displaySchedule(); // Reload schedule
+    displaySettingsUpdate(); // Refresh settings
 });
