@@ -253,6 +253,11 @@ var displaySettingsUpdate = function() {
 // Run displaySettingsUpdate on load
 displaySettingsUpdate();
 
+// Refreshes at every half hour... could make a background color change depending on the time
+setInterval(function() {
+    displaySettingsUpdate();
+}, (1000 * 10) * 30);
+
 // Toggle settings on button click
 $("#editDisplay").on("click", function() {
     $(this).parent().find("div").toggleClass("hidden");
