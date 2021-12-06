@@ -6,6 +6,13 @@ var savedSchedule = [];
 if ("schedule" in localStorage){
     savedSchedule = JSON.parse(localStorage.getItem("schedule"));
 }
+var displaySettings = {
+    startHour: 9,
+    displayHours: 9
+};
+if ("schedDisplaySetting" in localStorage){
+    displaySettings = JSON.parse(localStorage.getItem("schedDisplaySetting"));
+}
 
 // Format date as "Weekday, Month 0, 0000"
 var displayDate = function(date) {
@@ -36,6 +43,7 @@ $("#prev").on("click", function() {
         dateNav.currentDay = dateNumber(date);
         $(this).prop("disabled", true); // Hide previous button when you go back a day
     } else if (dateNav.currentDay == dateNumber(moment().add(1, "days"))) { // If tomorrow
+        dateNav.weekForward--;
         date = moment(); // Make day today
         dateNav.currentDay = today;
     } else if (dateNav.currentDay > today) { // If any day after tomorrow
@@ -81,17 +89,25 @@ $("#next").on("click", function() {
 var saveTask = function() {
     localStorage.setItem("schedule", JSON.stringify(savedSchedule));
 }
+var saveSetting = function() {
+    localStorage.setItem("schedDisplaySetting", JSON.stringify(displaySettings));
+}
 
 // Set a clear date for auto-clearing localstorage
 var clearDate = dateNumber(moment().subtract(2, "days"));
-console.log(clearDate);
+for (var i = 0; i < savedSchedule.length; i++) {
+    if (savedSchedule[i].day == clearDate) {
+        savedSchedule.splice(i, 1);
+    }
+    saveTask();
+}
 
 // Create time blocks and its buttons/content
 var displaySchedule = function() {
     $(".time-block").remove(); // Start with clean page
 
-    var startHour = 9; // Start calendar at 9 AM
-    var displayHoursAmount = 9; // Go until 5 PM
+    var startHour = displaySettings.startHour; // Start calendar at 9 AM
+    var displayHoursAmount = displaySettings.displayHours; // Go until 5 PM
 
     for (var i = 0; i < displayHoursAmount; i++) {
         var thisHour = i + startHour; // Hour on a 24 hour clock
@@ -114,12 +130,16 @@ var displaySchedule = function() {
         var currentHour = moment().get("hour");
 
         // Change background color depending on the relative time by adding classes
-        if (thisHour == currentHour) {
-            scheduleBlock.addClass("present"); // Present; if row hour = current hour
-        } else if (thisHour < currentHour) {
-            scheduleBlock.addClass("past"); // Past; if row hour is less than current hour number
-        } else if (thisHour > currentHour) {
-            scheduleBlock.addClass("future"); // Future; if row hour is more than current hour number
+        if (thisHour == currentHour && dateNav.currentDay == today) {
+            scheduleBlock.addClass("present"); // Present; if row hour = current hour and it is today
+        }
+            // Past; if row hour is less than current hour number of if day is yesterday
+         else if ((thisHour < currentHour && dateNav.currentDay == today) || dateNav.currentDay < today) {
+            scheduleBlock.addClass("past");
+        }
+            // Future; if row hour is more than current hour number or if day is in the future
+        else if ((thisHour > currentHour && dateNav.currentDay == today) || dateNav.currentDay > today) {
+            scheduleBlock.addClass("future");
         }
 
         // Create p element for schedule text content
@@ -203,10 +223,39 @@ var displaySchedule = function() {
 }
 displaySchedule(); // Run on page load
 
-/*// Open calendar
-currDayEl.on("click", function() {
-    $(this).datepicker({
-        minDate: -1,
-        maxDate: "7d"
+var displayStartHour = $("#displayStartHour");
+var displayHoursRange = $("#displayHoursRange");
+
+var displaySettingsUpdate = function() {
+    displayStartHour.attr({
+        min: 0,
+        max: (24 - displaySettings.displayHours),
+        value: displaySettings.startHour,
+
     });
-});*/
+    displayHoursRange.attr({
+        min: 1,
+        max: (24 - displaySettings.startHour),
+        value: displaySettings.displayHours
+    });
+    saveSetting();
+}
+displaySettingsUpdate();
+$("#hoursSelected").text(displaySettings.displayHours);
+
+$("#editDisplay").on("click", function() {
+    $(this).parent().find("div").toggleClass("hidden");
+});
+displayStartHour.on("input", function() {
+    var startHour = parseInt($(this).val());
+    displaySettings.startHour = startHour;
+    displaySchedule();
+    displaySettingsUpdate();
+});
+displayHoursRange.on("input", function() {
+    var hourRange = parseInt($(this).val());
+    $(this).parent().find("span").text(hourRange);
+    displaySettings.displayHours = hourRange;
+    displaySchedule();
+    displaySettingsUpdate();
+});

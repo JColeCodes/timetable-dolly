@@ -36,6 +36,19 @@
         <button id="next"><i class="fas fa-chevron-right"></i></button>
       </div>
     </header>
+    <div class="text-center">
+      <button id="editDisplay" class="edit-display">Edit hours displayed</button> 
+      <div class="display-hours d-flex justify-content-around text-center m-4">
+        <div class="col-6 hidden">
+          <p>Start Hour</p>
+          <input type="number" name="displayStartHour" id="displayStartHour" step="1" />
+        </div>
+        <div class="col-6 hidden">
+          <p>Display <span id="hoursSelected"></span> Hours</p>
+          <input type="range" id="displayHoursRange" />
+        </div>
+      </div>
+    </div>
     <div class="container" id="timeblocks">
     </div>
 
