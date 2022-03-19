@@ -4,7 +4,7 @@ For those who don't exactly work 9-to-5 (the default), there is a button that to
 Upon load, one may notice gray, red, and/or green. This scheduler highlights the day, with red showing the current hour (what your schedule says you should be doing right now), gray showing anything in the past (if it's supposed to have happened, it's gray), and green showing what's to come.
 
 # View Live Page
-[View the live Work Day Scheduler page on GitHub.](https://jcolecodes.github.io/work-day-scheduler-challenge-05/)
+[View the live Work Day Scheduler page on GitHub.](https://jcolecodes.github.io/timetable-dolly/)
 
 # Screenshot
 ![Screenshot of the work day scheduler in 990px width](./screenshot.jpg)
